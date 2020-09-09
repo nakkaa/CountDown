@@ -1,0 +1,96 @@
+!母艦設計=「母艦の可視はオフ」
+
+もし、母艦パス&「config.ini」が存在ならば、
+　母艦パス&「config.ini」のINI開いてZへ代入
+　Zで「設定」の「締切日時」をINI読んで締切日へ代入
+　Zで「設定」の「締切時刻」をINI読んで締切時間へ代入
+　Zで「内容」の「締切内容」をINI読んで締切内容へ代入
+　Zで「内容」の「締切経過時」をINI読んでFIN_TIMEへ代入
+　Zで「内容」の「タイトル」をINI読んでTITLEへ代入
+　ZのINI閉じる
+違えば、終了
+
+母艦について
+　タイトルはTITLE
+　高さは170
+　幅は610
+　背景色はウィンドウ背景色
+
+ラベル1とはラベル
+これについて
+　文字書体は「ms ui gothic|20」
+　テキストは締切内容
+　X=20
+　Y=20
+　W=280
+
+ラベル2とはラベル
+これについて
+　文字書体は「MS UI gothic|16」
+　テキストは「残り」
+　X=20
+　Y=85
+　W=100
+　
+グループボックス1とはグループボックス
+これについて
+　X=300
+　Y=10
+　H=55
+　W=275
+　テキストは「Today」
+　
+ラベル3とはラベル
+これについて
+　親部品はグループボックス1
+　X=25
+　Y=17
+　文字書体は「MS UI gothic|22」
+
+ラベル4とはラベル
+これについて
+　X=80
+　Y=70
+　文字書体は「MS UI gothic|33」
+　
+
+タイマー1とはタイマー
+これについて
+　値は1000
+　時満ちた時は～
+　　時間表示処理
+　　残時間表示処理
+　　
+●時間表示処理
+　　今日を「/」で区切ってTODAYへ代入
+　　ラベル3のテキストはTODAY\1&「月」&TODAY\2&「日 」&今
+●残時間表示処理
+　i=0
+　j=0
+　エラー監視
+　　ZAN_DAY=-(締切日と今日の日数差)
+　　ZAN_TIME=-(締切時間と今の秒差)
+　　ZAN_TIME>=60の間
+　　　もし、ZAN_TIME>=3600ならば、
+　　　　ZAN_TIME=ZAN_TIME-3600
+　　　　i=i+1
+　　　違えば、
+　　　　ZAN_TIME=ZAN_TIME-60
+　　　　j=j+1
+　エラーならば、
+　　MessageBox((母艦の、ハンドル),「日付または時刻の設定が不正のためカウントダウンに失敗しました。
+設定画面の書式を確認してください。」,「エラー」,$42010)。
+　　終了    
+　ラベル4のテキストはZAN_DAY&「日と 」&i&「時間」&j&「分」&ZAN_TIME&「秒」
+　もし、ZAN_DAY<0ならば、ラベル4のテキストはFIN_TIME
+●MessageBox(h,t,c,u) =DLL("user32.dll", "int MessageBoxA(
+        HWND hWnd, // handle of owner window
+        LPCTSTR lpText, // address of text in message box
+        LPCTSTR lpCaption, // address of title of message box  
+        UINT uType  // style of message box
+    )")#"
+    
+時間表示処理
+残時間表示処理
+タイマー1を開始
+母艦の可視はオン
